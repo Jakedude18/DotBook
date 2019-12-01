@@ -11,11 +11,18 @@ class Dot {
     private int set,counts;
 
     Dot(String coordinate,int set,int counts){
-        if(Pattern.matches("^s[1,2] ([1-4] (in|out)|On) ([1-4]5|([1-5]0)) ([1-9]|1[1-4]) ([bf](bh|fh)|(bfs|fbs))$",coordinate)){
+        if(Pattern.matches("^((s[1,2] ([1-4] (in|out))|on)|on 50) ([1-4]?5|([1-5]0)) ([1-9]|1[0-4]) ([bf](bh|fh)|(bfs|fbs))$",coordinate)){
+            final int shortCoordinateMaxLength = 12;
+            boolean shortCoordinate = coordinate.length() < 12;
+            int splittingPoint = shortCoordinate?  2: 4;
             Pattern pattern = Pattern.compile(" ");
+            coordinate.toLowerCase();
             Matcher m =  pattern.matcher(coordinate);
-            for(int i = 0;i < 4; i++) m.find();
+            for(int i = 0;i < splittingPoint; i++) m.find();
             this.coordinate = new Pair<String,String>(coordinate.substring(0,m.start()),coordinate.substring(m.start() + 1));
+            if(shortCoordinate){
+                coordinate = "s1 0 in 50 " + this.coordinate.getValue();
+            }
             this.coordinateSplit = coordinate.split(" ");
         }
         this.set = set;
@@ -26,8 +33,8 @@ class Dot {
         return coordinate;
     }
 
-    String getSide() {
-        return coordinateSplit[0].substring(1);
+    int side() {
+        return Integer.valueOf(coordinateSplit[0].substring(1));
     }
 
     int ltr() {

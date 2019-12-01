@@ -21,25 +21,28 @@ import javafx.util.Pair;
         squaresNum = (int)(leftByRightX/interval/8);
         this.dotRadius = interval / 2;
         this.fontSize = fontSize;
-    }
-     Pair<Double, Double> getSet(){
-        return set;
-    }
+     }
+     Double getSetX(){
+        return set.getKey();
+     }
+
+     Double getSetY(){
+         return set.getValue();
+     }
 
      Pair<Double, Double> getCoordinate() {
         return coordinate;
-    }
+     }
 
      Pair<Double, Double> getBottomLeftCorner() {
         return bottomLeftCorner;
-    }
+     }
 
      Pair<Double, Double> getLeftByRight() {
         return leftByRight;
-    }
+     }
 
      Pair<Double, Double> getCounts(){
         return counts;
-    }
-
+     }
  }
