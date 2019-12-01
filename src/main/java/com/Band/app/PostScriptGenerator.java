@@ -11,7 +11,7 @@ class PostScriptGenerator {
     private FileWriter psw = new FileWriter(postScript);
     private double setX,setY,countsX,countsY, coordinateX, coordinateY, bottomLeftCornerX, bottomLeftCornerY, leftByRightX, leftByRightY, interval, padding, dotRadius;
     private int fontSize, squaresNum;
-    private int pageCount = 0;
+    private int pageCount = 1;
 
     PostScriptGenerator () throws Exception{
         InputStream is;
@@ -51,7 +51,7 @@ class PostScriptGenerator {
         final int dotsPer5Yards = 8;
         final int hashesPer10Yards = 10;
         final double yardsPerHash = 1.6;
-        final int holeSize = 18;
+        final int holeSize = 27;
         int s1 = dot.side() == 1?-1:1;
         if(pageCount % 2 == 1){
             setY -= holeSize;
@@ -68,10 +68,14 @@ class PostScriptGenerator {
         psw.write(String.format("%.1f %.1f moveto%n", countsX, countsY));
         psw.write(String.format("(%d) show%n",dot.getCounts()));
         //adding coordinate TODO weird thing with coordinate being null
-        psw.write(String.format("%.1f %.1f moveto%n", coordinateX, coordinateY));
-        psw.write(String.format("(%s) show%n",dot.getCoordinate().getKey()));
-        psw.write(String.format("%.1f %.1f moveto%n", coordinateX, coordinateY- fontSize));
-        psw.write(String.format("(%s) show%n",dot.getCoordinate().getValue()));
+        // formatting for on coordinate
+        double coordinateFormat;
+        if(dot.ltr() != 0) coordinateFormat = 0;
+        else coordinateFormat = dot.ltrRel() == 50? .5 : .25;
+        psw.write(String.format("%.1f %.1f moveto%n", coordinateX + fontSize*coordinateFormat, coordinateY));
+        psw.write(String.format("(%s) show%n",dot.getCoordinateX()));
+        psw.write(String.format("%.1f %.1f moveto%n", coordinateX + fontSize/2, coordinateY - fontSize));
+        psw.write(String.format("(%s) show%n",dot.getCoordinateY()));
         //adding the grid
         //stroke line
         double lineHeight = bottomLeftCornerY + (dot.ftbRel().equals("f")?
