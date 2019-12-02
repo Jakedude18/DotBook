@@ -7,8 +7,9 @@ import java.io.File;
 import java.io.FileWriter;
 
 class PostScriptGenerator {
-    private File postScript = new File("/home/fuzzy/Downloads/test.ps");
-    private FileWriter psw = new FileWriter(postScript);
+    private File postScriptOdd = new File("/home/fuzzy/Downloads/odd.ps");
+    private File postScriptEven = new File("/home/fuzzy/Downloads/even.ps");
+    private FileWriter psw;
     private double setX,setY,countsX,countsY, coordinateX, coordinateY, bottomLeftCornerX, bottomLeftCornerY, leftByRightX, leftByRightY, interval, padding, dotRadius;
     private int fontSize, squaresNum;
     private int pageCount = 1;
@@ -18,7 +19,6 @@ class PostScriptGenerator {
         Properties p = new Properties();
         is = new FileInputStream("config.properties");
         p.load(is);
-        System.out.println(p.getProperty("setX"));
         setX = Double.valueOf(p.getProperty("setX"));
         setY = Double.valueOf(p.getProperty("setY"));
         countsX = Double.valueOf(p.getProperty("countsX"));
@@ -35,7 +35,6 @@ class PostScriptGenerator {
         padding = Integer.valueOf(p.getProperty("padding"));
         dotRadius = interval/2;
         //basic syntax for postscript files
-        psw.write("%!\n");
     }
 
 
@@ -58,9 +57,13 @@ class PostScriptGenerator {
             countsY -= holeSize;
             coordinateY -= holeSize;
             bottomLeftCornerY -= holeSize;
+            psw = new FileWriter(postScriptOdd);
         }
+        else psw = new FileWriter(postScriptEven);
         pageCount++;
         changeFont(fontSize);
+        //adding page marking
+        psw.write(String.format("%%%d%n",pageCount));
         //adding set
         psw.write(String.format("%.1f %.1f moveto%n", setX, setY));
         psw.write(String.format("(%d) show%n",dot.getSet()));
@@ -111,12 +114,8 @@ class PostScriptGenerator {
             if (num > 0) psw.write(String.format("(%d) show%n", num));
         }
 
-        //adding showpage
-        psw.write("showpage");
-    }
-
-    String showPage() throws Exception{
+        //adding closing syntax
+        psw.write("showpage\n");
         psw.close();
-        return postScript.toString();
     }
 }
