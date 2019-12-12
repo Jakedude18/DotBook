@@ -19,13 +19,12 @@ public class OCRService {
         }
 
         final String completableFuture;
-
         final PIX pix = lept.pixRead(file.getPath());
-        pix.xres(70);
-        pix.yres(70);
+        pix.xres(300);
+        pix.yres(300);
 
         api.SetImage(pix);
-        api.SetSourceResolution(70);
+        api.SetSourceResolution(300);
 
         final BytePointer bytePointer = api.GetUTF8Text();
         String text = bytePointer.getString();
